@@ -1,34 +1,38 @@
-import React from 'react';
-import Relay from 'react-relay';
+import React from "react";
+import Relay from "react-relay";
 
+// Your React component
 class App extends React.Component {
   render() {
     return (
       <div>
-        <h1>Widget list</h1>
-        <ul>
-          {this.props.viewer.widgets.edges.map(edge =>
-            <li key={edge.node.id}>{edge.node.name} (ID: {edge.node.id})</li>
-          )}
-        </ul>
+        <h1>{this.props.latestPost.text}</h1>
+        <span>Post ID : {this.props.latestPost.id}</span>
+        <br />
+        <span>Author ID : {this.props.currentAuthor.id}</span>
+        <br />
+        <span>Author Name : {this.props.currentAuthor.name}</span>
       </div>
     );
   }
 }
 
+// Your Relay container.
+// Compose your React components with a declaration of
+// the GraphQL query fragments that fetch their data.
 export default Relay.createContainer(App, {
   fragments: {
-    viewer: () => Relay.QL`
-      fragment on User {
-        widgets(first: 10) {
-          edges {
-            node {
-              id,
-              name,
-            },
-          },
-        },
+    latestPost: () => Relay.QL`
+      fragment on Post {
+        id
+        text
       }
     `,
-  },
+    currentAuthor: () => Relay.QL`
+      fragment on Author {
+        id
+        name
+      }
+    `
+  }
 });
